@@ -1,4 +1,5 @@
 import { expandCard, shrinkCard, deleteCard } from './cards'
-import { addLocation, fetchAllLocationsData } from './locations'
+import { fetchLocationData, fetchAllLocationsData } from './locations'
+import purgeAppData from './app'
 
-export { addLocation, fetchAllLocationsData, expandCard, shrinkCard, deleteCard }
+export { fetchLocationData, fetchAllLocationsData, expandCard, shrinkCard, deleteCard, purgeAppData }

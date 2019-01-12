@@ -87,6 +87,7 @@ const ExpandedWeatherCard = ({ location, shrinkCard, deleteCard }) => {
       {/* Summary */}
       <section className="summary">{hourly.summary}</section>
 
+<<<<<<< HEAD
       {/* Weather animation frame */}
       <section className="weather-animation-frame">
         <hr className="top" />
@@ -94,6 +95,13 @@ const ExpandedWeatherCard = ({ location, shrinkCard, deleteCard }) => {
           <p>{fact}</p>
         </blockquote>
         <hr className="bottom" />
+=======
+      {/* Random fact */}
+      <section className="random-fact">
+        <span className="quote">&ldquo;&nbsp;</span>
+        {fact}
+        <span className="quote">&nbsp;&rdquo;</span>
+>>>>>>> c597d7ce3f83c5ad7bad5d390097b59925916142
       </section>
 
       {/* Daily forecast section */}

@@ -2,20 +2,24 @@ import { combineReducers } from 'redux'
 
 import { pick } from '../utils'
 import {
-  ADD_LOCATION,
   CARD_EXPANDED,
   CARD_SHRINKED,
   CARD_DELETED,
-  LOCATION_DATA_FETCHED,
+  FETCH_LOCATION_DATA_REQUEST,
+  FETCH_LOCATION_DATA_SUCCESS,
+  FETCH_LOCATION_DATA_FAILURE,
+  APP_DATA_PURGED,
 } from '../actions/action-types'
 
 const ids = (state = [], action) => {
   switch (action.type) {
-    case ADD_LOCATION:
-      if (state.includes(action.location.id)) return [...state]
-      return [...state, action.location.id]
+    case FETCH_LOCATION_DATA_REQUEST:
+      if (!state.includes(action.id)) return [...state, action.id]
+      return state
     case CARD_DELETED:
       return state.filter(id => id !== action.id)
+    case APP_DATA_PURGED:
+      return []
     default:
       return state
   }
@@ -23,18 +27,31 @@ const ids = (state = [], action) => {
 
 const locationsById = (state = {}, action) => {
   switch (action.type) {
-    case ADD_LOCATION:
+    case FETCH_LOCATION_DATA_REQUEST:
       return {
         ...state,
-        [action.location.id]: action.location,
+        [action.id]: { ...state[action.id], id: action.id, isFetching: true, errorMessage: null },
       }
-    case LOCATION_DATA_FETCHED:
+    case FETCH_LOCATION_DATA_SUCCESS:
       return {
         ...state,
-        [action.location.id]: { ...state[action.location.id], ...action.location },
+        [action.location.id]: { ...state[action.location.id], ...action.location, isFetching: false },
+      }
+    case FETCH_LOCATION_DATA_FAILURE:
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          id: action.id,
+          isFetching: false,
+          errorMessage: action.errorMessage,
+          ...action.suggestionData,
+        },
       }
     case CARD_DELETED:
       return pick(state, Object.keys(state).filter(id => id !== action.id))
+    case APP_DATA_PURGED:
+      return {}
     default:
       return state
   }
@@ -46,6 +63,7 @@ const cardState = (state = 'STACKED', action) => {
       return 'EXPANDED'
     case CARD_SHRINKED:
     case CARD_DELETED:
+    case APP_DATA_PURGED:
       return 'STACKED'
     default:
       return state
@@ -58,6 +76,7 @@ const expandedCardId = (state = null, action) => {
       return action.id
     case CARD_SHRINKED:
     case CARD_DELETED:
+    case APP_DATA_PURGED:
       return null
     default:
       return state
